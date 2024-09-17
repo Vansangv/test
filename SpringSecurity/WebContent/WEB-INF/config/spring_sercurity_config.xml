@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+	<!-- config http voi spring security -->
+	<http auto-config="true">
+		<!-- quyen ROLE_ADMIN duoc phep truy cap cac duong dan admin*** -->
+		<intercept-url pattern="/admin**"
+			access="hasRole('ROLE_ADMIN')" />
+		<!-- quyen ROLE_ADMIN va ROLE_USER duoc truy cap cac duong dan user*** -->
+		<intercept-url pattern="/user**"
+			access="hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')" />
+		
+		<!-- 
+			login-page: url duoc su dung de render trang login
+			login-procession-url: url ma SpringSecurity xu ly hanh dong login
+			default-target-url: url dieu huong khi login thanh cong
+			authentication-failure-url: url dieu huong khi login that bai
+			username-parameter: ten parameter chua thong tin username nguoi dung dang nhap
+			password-parameter: ten password chua thong tin password nguoi dung dang nhap
+		 -->
+		<form-login login-page="/login"
+			login-processing-url="/loginAction"			
+			default-target-url="/user" authentication-failure-url="/login?error"
+			username-parameter="username" password-parameter="password" />
+		<!-- 
+			logout-url: url xu ly hanh dong logout
+			logout-success-url: url chuyen toi khi logout thanh cong
+			delete-cookies: xoa cookies ngon ngu java cua client khop voi session sinh ra tren server
+		 -->
+		<logout logout-url="/logoutAction"
+			logout-success-url="/logout" delete-cookies="JSESSIONID" />
+	</http>
+	<authentication-manager>
+		<authentication-provider
+			user-service-ref="webUserDetailService">
+			<password-encoder hash="bcrypt" />
+		</authentication-provider>
+	</authentication-manager>
+</beans:beans>
